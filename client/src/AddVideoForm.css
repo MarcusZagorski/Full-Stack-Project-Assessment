@@ -1,0 +1,21 @@
+form {
+	text-align: center;
+	margin: 2rem auto;
+	display: flex;
+	flex-direction: column;
+	gap: 0.8rem;
+}
+
+input {
+	width: 32rem;
+	height: 2rem;
+	padding-left: 0.5rem;
+}
+
+button {
+	width: fit-content;
+	margin: 0.8rem auto;
+	padding: 0.5rem 1.6rem;
+	border-radius: 12px;
+	border: 1px solid black;
+}

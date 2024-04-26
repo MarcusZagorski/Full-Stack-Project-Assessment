@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import "./VideoListing.css";
 
 const VideoListing = () => {
 	const [videos, setVideos] = useState([]);
@@ -18,14 +19,12 @@ const VideoListing = () => {
 					fetchState.current = true;
 				});
 		}
-	}, []);
+	}, [videos]);
 
-	console.log(videos);
-
-	const videoNames = videos.map((vids, index) => {
+	const videoDetails = videos.map((vids, index) => {
 		return (
 			<div key={index}>
-				<p>{vids.title}</p>
+				<p className="vid-title">{vids.title}</p>
 				<iframe
 					width="560"
 					height="315"
@@ -35,12 +34,13 @@ const VideoListing = () => {
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 					referrerpolicy="strict-origin-when-cross-origin"
 					allowfullscreen
+					className="video"
 				></iframe>
 			</div>
 		);
 	});
 
-	return <>{videoNames}</>;
+	return <div className="videos_container">{videoDetails}</div>;
 };
 
 export default VideoListing;
