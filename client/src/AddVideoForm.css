@@ -1,5 +1,4 @@
 .add_videos_container {
-	background-color: pink;
 	padding: 0.1rem 0;
 	margin: 2rem 0;
 }
@@ -12,17 +11,24 @@ form {
 	gap: 0.8rem;
 }
 
+::placeholder {
+	color: #efffca;
+}
+
 input {
 	width: 32rem;
 	height: 2rem;
+	background-color: #003838;
 	padding-left: 0.5rem;
+	border: 1px #efffca solid;
 }
 
 .submit_btn {
 	width: fit-content;
 	margin: 0.8rem auto;
 	padding: 0.5rem 1.6rem;
-	border-radius: 12px;
-	border: 1px solid black;
+	border: 1px solid #efffca;
 	cursor: pointer;
+	background: none;
+	color: #efffca;
 }

@@ -3,15 +3,21 @@
 	grid-template-columns: repeat(3, 1fr);
 	row-gap: 4rem;
 	justify-items: center;
+	margin-top: 4rem;
 }
 
 .vid-title {
 	text-align: center;
-	font-weight: bold;
+	font-weight: 500;
+	margin: 0 auto;
 }
 
 .video {
 	box-shadow: 4px 4px 11px 1px #00000055;
+	width: 34rem;
+	height: 20rem;
+	margin-top: 2rem;
+	border-radius: 32px;
 }
 
 .del_btn {
@@ -19,11 +25,11 @@
 	color: white;
 	border: none;
 	display: block;
-	margin-left: auto;
-	margin-top: 0.9rem;
+	margin-top: 0.4rem;
 	padding: 0.3rem 1.2rem;
 	transition: all ease-in-out 2s;
 	cursor: pointer;
+	margin-left: 0.4rem;
 }
 
 .del_btn:hover,

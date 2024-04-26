@@ -26,8 +26,6 @@ const VideoListing = () => {
 			<div key={index}>
 				<p className="vid-title">{vids.title}</p>
 				<iframe
-					width="560"
-					height="315"
 					src={vids.src}
 					title="YouTube video player"
 					frameborder="0"
