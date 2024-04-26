@@ -13,3 +13,20 @@
 .video {
 	box-shadow: 4px 4px 11px 1px #00000055;
 }
+
+.del_btn {
+	background-color: red;
+	color: white;
+	border: none;
+	display: block;
+	margin-left: auto;
+	margin-top: 0.9rem;
+	padding: 0.3rem 1.2rem;
+	transition: all ease-in-out 2s;
+	cursor: pointer;
+}
+
+.del_btn:hover,
+.del_btn:active {
+	border-radius: 2rem;
+}

@@ -36,6 +36,17 @@ const VideoListing = () => {
 					allowfullscreen
 					className="video"
 				></iframe>
+				<button
+					className="del_btn"
+					onClick={async () => {
+						const deleteID = vids.id;
+						const response = await fetch(`/api/videos/${deleteID}`, {
+							method: "DELETE",
+						});
+					}}
+				>
+					DELETE
+				</button>
 			</div>
 		);
 	});
