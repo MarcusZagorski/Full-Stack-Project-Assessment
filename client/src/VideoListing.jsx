@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import "./VideoListing.css";
 
-const VideoListing = () => {
+const VideoListing = ({ loadVideos, setLoadVideos }) => {
 	const [videos, setVideos] = useState([]);
+	//const [loadVideos, setLoadVideos] = useState(true);
 	const fetchState = useRef(true);
 
 	useEffect(() => {
-		if (fetchState.current) {
-			fetchState.current = false;
+		if (loadVideos) {
 			fetch("/api/videos")
 				.then((res) => res.json())
 				.then((data) => {
@@ -18,8 +18,9 @@ const VideoListing = () => {
 					console.error("There was an error fetching messages", error);
 					fetchState.current = true;
 				});
+			setLoadVideos(false);
 		}
-	}, [videos]);
+	}, [loadVideos]);
 
 	const videoDetails = videos.map((vids, index) => {
 		return (
