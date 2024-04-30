@@ -4,32 +4,51 @@
 }
 
 form {
+	width: max-content;
 	text-align: center;
 	margin: 2rem auto 0 auto;
 	display: flex;
 	flex-direction: column;
-	gap: 0.8rem;
+	gap: 1.2rem;
+}
+
+.checkbox {
+	align-self: start;
 }
 
 ::placeholder {
-	color: #efffca;
+	color: #322a78;
 }
 
-input {
-	color: #efffca;
+.video-title,
+.video-url {
+	color: #322a78;
 	width: 32rem;
 	height: 2rem;
-	background-color: #003838;
 	padding-left: 0.5rem;
-	border: 1px #efffca solid;
+	border: 1px #322a78 solid;
 }
 
 .submit_btn {
 	width: fit-content;
 	margin: 0.8rem auto;
 	padding: 0.5rem 1.6rem;
-	border: 1px solid #efffca;
+	border: 1px solid #322a78;
 	cursor: pointer;
 	background: none;
-	color: #efffca;
+	color: #322a78;
+}
+
+.error-message,
+.successful-message {
+	text-align: center;
+	font-size: 0.8rem;
+}
+
+.error-message {
+	color: red;
+}
+
+.successful-message {
+	color: green;
 }

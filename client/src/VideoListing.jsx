@@ -1,10 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./VideoListing.css";
 
 const VideoListing = ({ loadVideos, setLoadVideos }) => {
 	const [videos, setVideos] = useState([]);
-	//const [loadVideos, setLoadVideos] = useState(true);
-	const fetchState = useRef(true);
 
 	useEffect(() => {
 		if (loadVideos) {
@@ -12,11 +10,9 @@ const VideoListing = ({ loadVideos, setLoadVideos }) => {
 				.then((res) => res.json())
 				.then((data) => {
 					setVideos(data);
-					fetchState.current = true;
 				})
 				.catch((error) => {
 					console.error("There was an error fetching messages", error);
-					fetchState.current = true;
 				});
 			setLoadVideos(false);
 		}
@@ -42,6 +38,9 @@ const VideoListing = ({ loadVideos, setLoadVideos }) => {
 						const response = await fetch(`/api/videos/${deleteID}`, {
 							method: "DELETE",
 						});
+						if (response.ok) {
+							setLoadVideos(true);
+						}
 					}}
 				>
 					DELETE
