@@ -57,7 +57,22 @@ router.post("/videos", async (req, res) => {
 	}
 });
 
-router.put("/videos/:id");
+router.post("/videos/:id/:vote", async (req, res) => {
+	const selectId = parseInt(req.params.id);
+	const selectVote = req.params.vote;
+
+	if (selectVote === "up") {
+		await db.query("UPDATE videos SET rating = rating + 1 WHERE id = $1", [
+			selectId,
+		]);
+	} else {
+		await db.query("UPDATE videos SET rating = rating - 1 WHERE id = $1", [
+			selectId,
+		]);
+	}
+
+	res.send("successful");
+});
 
 router.delete("/videos/:id", async (req, res) => {
 	const deleteVideo = await db.query(
