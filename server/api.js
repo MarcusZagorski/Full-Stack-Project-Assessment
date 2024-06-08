@@ -20,13 +20,27 @@ const getYoutubeTitle = async (videoUrl, apiKey) => {
 		});
 };
 
-router.get("/videos", async (_, res) => {
+router.get("/videos", async (req, res) => {
 	const videos = await db.query("SELECT * FROM videos ORDER BY id ASC");
-	videos
-		? res.send(videos.rows)
-		: res
-				.status(500)
-				.send({ success: "false", error: "Could not connect to database" });
+
+	const orderQuery = req.query.order;
+	if (orderQuery === "asc") {
+		const videosASC = await db.query(
+			"SELECT * FROM videos ORDER BY rating ASC"
+		);
+		res.send(videosASC.rows);
+	} else if (orderQuery === "desc") {
+		const videosDESC = await db.query(
+			"SELECT * FROM videos ORDER BY rating DESC"
+		);
+		res.send(videosDESC.rows);
+	} else {
+		videos
+			? res.send(videos.rows)
+			: res
+					.status(500)
+					.send({ success: "false", error: "Could not connect to database" });
+	}
 });
 
 router.post("/videos", async (req, res) => {
@@ -42,15 +56,24 @@ router.post("/videos", async (req, res) => {
 		const youtubeTitle = await getYoutubeTitle(videoSrc, apiKey);
 		const videoTitle = req.body.title ? req.body.title : youtubeTitle;
 
-		if (videoSrc.length == 41 || videoSrc.length == 61) {
-			const addVideo = await db.query(
-				"INSERT INTO videos (title, src) VALUES ($1, $2)",
-				[videoTitle, videoSrc]
-			);
-			res.send(addVideo.rows);
-		} else {
-			res.status(404).send("Please add a valid Youtube video");
-		}
+		// FIX THIS CONDITION
+		// if (videoSrc.length == 41 || videoSrc.length == 61) {
+		// 	const addVideo = await db.query(
+		// 		"INSERT INTO videos (title, src, timeSent) VALUES ($1, $2, $3)",
+		// 		[videoTitle, videoSrc, timeStamp]
+		// 	);
+
+		// const currentDate = new Date().toLocaleDateString();
+		// // const currentTime = new Date().toLocaleTimeString();
+
+		const addVideo = await db.query(
+			"INSERT INTO videos (title, src, currentTime, currentDate) VALUES ($1, $2, NOW(), CURRENT_DATE)",
+			[videoTitle, videoSrc]
+		);
+
+		addVideo
+			? res.send(addVideo.rows)
+			: res.status(404).send("Please add a valid Youtube video");
 	} catch (err) {
 		console.error(err);
 		res.status(500).send("Database could not be loaded");

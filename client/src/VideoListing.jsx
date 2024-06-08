@@ -3,20 +3,39 @@ import "./VideoListing.css";
 
 const VideoListing = ({ loadVideos, setLoadVideos }) => {
 	const [videos, setVideos] = useState([]);
+	const [orderQuery, setOrderQuery] = useState("");
+
+	const handleFilterClick = (e) => {
+		if (e.target.value === "Default") {
+			setOrderQuery(null);
+		} else if (e.target.value === "Ascending") {
+			setOrderQuery("asc");
+		} else if (e.target.value) {
+			setOrderQuery("desc");
+		}
+	};
+
+	const filterButton = (
+		<label for="order">
+			<select name="order" onChange={handleFilterClick}>
+				<option name="default">Default</option>
+				<option name="asc">Ascending</option>
+				<option name="desc">Descending</option>
+			</select>
+		</label>
+	);
 
 	useEffect(() => {
-		if (loadVideos) {
-			fetch("/api/videos")
-				.then((res) => res.json())
-				.then((data) => {
-					setVideos(data);
-				})
-				.catch((error) => {
-					console.error("There was an error fetching messages", error);
-				});
-			setLoadVideos(false);
-		}
-	}, [loadVideos]);
+		fetch(`/api/videos/?order=${orderQuery}`)
+			.then((res) => res.json())
+			.then((data) => {
+				setVideos(data);
+			})
+			.catch((error) => {
+				console.error("There was an error fetching messages", error);
+			});
+		setLoadVideos(false);
+	}, [orderQuery, loadVideos]);
 
 	const handleClick = async (video) => {
 		const response = await fetch(`/api/videos/${video}`, {
@@ -39,10 +58,18 @@ const VideoListing = ({ loadVideos, setLoadVideos }) => {
 		}
 	};
 
+	const formatDate = (date) => {
+		let year = date.slice(0, 4);
+		let month = date.slice(5, 7);
+		let day = date.slice(8, 10);
+		return <p className="dateadded">{`Date Added: ${day}-${month}-${year}`}</p>;
+	};
+
 	const videoDetails = videos.map((vids, index) => {
 		return (
 			<div key={index} className="vid-container">
 				<p className="vid-title">{vids.title}</p>
+				{formatDate(vids.currentdate)}
 				<iframe
 					src={vids.src}
 					title="YouTube video player"
@@ -99,7 +126,12 @@ const VideoListing = ({ loadVideos, setLoadVideos }) => {
 		);
 	});
 
-	return <div className="videos_container">{videoDetails}</div>;
+	return (
+		<>
+			{filterButton}
+			<div className="videos_container">{videoDetails}</div>
+		</>
+	);
 };
 
 export default VideoListing;
