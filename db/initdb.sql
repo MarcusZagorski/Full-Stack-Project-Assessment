@@ -1,22 +1,95 @@
-DROP TABLE IF EXISTS videos CASCADE;
+--
+-- PostgreSQL database dump
+--
 
-CREATE TABLE videos (
-    ID  SERIAL PRIMARY KEY,
-    title VARCHAR,
-    src VARCHAR
+-- Dumped from database version 14.11 (Homebrew)
+-- Dumped by pg_dump version 14.11 (Homebrew)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: videos; Type: TABLE; Schema: public; Owner: marcus
+--
+
+CREATE TABLE public.videos (
+    id integer NOT NULL,
+    title character varying,
+    src character varying,
+    rating integer DEFAULT 0,
+    currenttime time(0) without time zone,
+    currentdate date
 );
 
--- UPDATE videos SET src = 'newvalue' where id =1;
 
-INSERT INTO videos (title,src) VALUES ('Never Gonna Give You Up','https://www.youtube.com/embed/dQw4w9WgXcQ?si=sdvqEritjOTwN2Af');
-INSERT INTO videos (title,src) VALUES ('The Coding Train','https://www.youtube.com/embed/HerCR8bw_GE?si=5Xfqx9K1JMB_QCBh');
-INSERT INTO videos (title,src) VALUES ('Mac & Cheese | Basics with Babish','https://www.youtube.com/embed/FUeyrEN14Rk?si=dUHtCerjTKIdgK5u');
-INSERT INTO videos (title,src) VALUES ('Videos for Cats to Watch - 8 Hour Bird Bonanza','https://www.youtube.com/embed/xbs7FT7dXYc?si=W9bjQcH1cYbIlnY3');
-INSERT INTO videos (title,src) VALUES ('The Complete London 2012 Opening Ceremony | London 2012 Olympic Games','https://www.youtube.com/embed/4As0e4de-rI?si=QvvaM7T6gj31cQ6z');
-INSERT INTO videos (title,src) VALUES ('Learn Unity - Beginners Game Development Course','https://www.youtube.com/embed/gB1F9G0JXOo?si=zh21-opwR7otFnSZ');
-INSERT INTO videos (title,src) VALUES ('Cracking Enigma in 2021 - Computerphile','https://www.youtube.com/embed/RzWB5jL5RX0?si=OuYo20zJalIFBT2w');
-INSERT INTO videos (title,src) VALUES ('Coding Adventure: Chess AI','https://www.youtube.com/embed/U4ogK0MIzqk?si=xICbZlD8Hm9nCyWy');
-INSERT INTO videos (title,src) VALUES ('Coding Adventure: Ant and Slime Simulations','https://www.youtube.com/embed/X-iSQQgOd1A?si=bZUPXmKxC43YzERA');
-INSERT INTO videos (title,src) VALUES ('Why the Tour de France is so brutal','https://www.youtube.com/embed/ZacOS8NBK6U?si=nfaj6AHw0aaE-c7C');
+ALTER TABLE public.videos OWNER TO marcus;
 
--- you can insert more rows using example data from the example_data.csv fileINSERT INTO videos (title,src) VALUES ('Code Your Future','https://www.youtube.com/watch?v=ZacOS8NBK6U');
+--
+-- Name: videos_id_seq; Type: SEQUENCE; Schema: public; Owner: marcus
+--
+
+CREATE SEQUENCE public.videos_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.videos_id_seq OWNER TO marcus;
+
+--
+-- Name: videos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marcus
+--
+
+ALTER SEQUENCE public.videos_id_seq OWNED BY public.videos.id;
+
+
+--
+-- Name: videos id; Type: DEFAULT; Schema: public; Owner: marcus
+--
+
+ALTER TABLE ONLY public.videos ALTER COLUMN id SET DEFAULT nextval('public.videos_id_seq'::regclass);
+
+
+--
+-- Data for Name: videos; Type: TABLE DATA; Schema: public; Owner: marcus
+--
+
+COPY public.videos (id, title, src, rating, currenttime, currentdate) FROM stdin;
+308	Fallout 4 (Next Gen) - Before You Buy	https://www.youtube.com/embed/Gvv99E2zdgk?t=124	32	13:05:16	2024-05-02
+\.
+
+
+--
+-- Name: videos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: marcus
+--
+
+SELECT pg_catalog.setval('public.videos_id_seq', 314, true);
+
+
+--
+-- Name: videos videos_pkey; Type: CONSTRAINT; Schema: public; Owner: marcus
+--
+
+ALTER TABLE ONLY public.videos
+    ADD CONSTRAINT videos_pkey PRIMARY KEY (id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
