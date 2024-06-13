@@ -3,13 +3,7 @@ import { test, expect } from "@playwright/test";
 import pg from "pg";
 
 const { Pool } = pg;
-const db = new Pool({
-	user: "marcus",
-	password: "jade1710",
-	host: "localhost",
-	port: 5432,
-	database: "videorec_test",
-});
+const db = new Pool({ connectionString: process.env.TEST_DATABASE_URL });
 
 async function openWebsite(page) {
 	// Open URL
