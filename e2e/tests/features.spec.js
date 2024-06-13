@@ -1,6 +1,11 @@
-// import resetDatabase from "./utils";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+import { config } from "dotenv";
 import { test, expect } from "@playwright/test";
 import pg from "pg";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+config({ path: resolve(__dirname, "../../.env") });
 
 const { Pool } = pg;
 const db = new Pool({ connectionString: process.env.TEST_DATABASE_URL });
@@ -29,7 +34,6 @@ async function findVideoByTitle(page, title) {
 test.describe("Videos", () => {
 	test.beforeEach(async () => {
 		console.log("!--- TEST STARTED ---!");
-		await db.connect();
 	});
 
 	test("Level 130 requirements - display videos", async ({ page }) => {
