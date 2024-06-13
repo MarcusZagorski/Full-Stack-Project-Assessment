@@ -49,9 +49,7 @@ router.post("/videos", async (req, res) => {
 		videoSrc = videoSrc.includes("youtu.be")
 			? videoSrc.replace("youtu.be", "youtube.com/embed")
 			: videoSrc.replace("watch?v=", "embed/");
-		videoSrc = videoSrc.includes("https://www.")
-			? videoSrc
-			: `https://www.${videoSrc}`;
+		videoSrc = videoSrc.includes("https://") ? videoSrc : `https://${videoSrc}`;
 
 		const youtubeTitle = await getYoutubeTitle(videoSrc, apiKey);
 		const videoTitle = req.body.title ? req.body.title : youtubeTitle;

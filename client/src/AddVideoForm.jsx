@@ -43,12 +43,16 @@ const AddVideoForm = ({ setLoadVideos }) => {
 
 	const submitForm = () => {
 		const videoTitleInputField = !checked ? null : (
-			<input
-				type="text"
-				name="title"
-				placeholder="Video title"
-				className="video-title"
-			></input>
+			<>
+				<label for="vid-title"></label>
+				<input
+					type="text"
+					name="title"
+					placeholder="Video title"
+					className="video-title"
+					id="vid-title"
+				></input>
+			</>
 		);
 
 		return (
@@ -59,13 +63,14 @@ const AddVideoForm = ({ setLoadVideos }) => {
 					</label>
 					<span>Add custom title?</span>
 				</div>
-				{/* {!addedVideo ? "" : addedVideoMessage()} */}
 				{videoTitleInputField}
+				<label for="vid-url"></label>
 				<input
 					type="text"
 					name="src"
 					placeholder="Video url"
 					className="video-url"
+					id="vid-url"
 				></input>
 				<button type="submit" className="submit_btn">
 					SUBMIT
@@ -76,7 +81,7 @@ const AddVideoForm = ({ setLoadVideos }) => {
 
 	return (
 		<div className="add_videos_container">
-			<h1>Add video recommendations</h1>
+			<h1>Submit a new video</h1>
 			{submitForm()}
 		</div>
 	);

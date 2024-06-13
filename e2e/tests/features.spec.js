@@ -1,12 +1,23 @@
-import db from "../../server/db";
-import resetDatabase from "./utils";
+// import resetDatabase from "./utils";
 import { test, expect } from "@playwright/test";
+import pg from "pg";
+
+const { Pool } = pg;
+const db = new Pool({
+	user: "marcus",
+	password: "jade1710",
+	host: "localhost",
+	port: 5432,
+	database: "videorec_test",
+});
 
 async function openWebsite(page) {
 	// Open URL
 	await page.goto("http://localhost:3000");
 	// Wait for title to appear
-	await expect(page.getByText("Video Recommendations")).toBeVisible();
+	await expect(
+		page.getByRole("heading", { name: "Video Recommendations", exact: true })
+	).toBeVisible();
 }
 
 async function findVideoByTitle(page, title) {
@@ -16,22 +27,26 @@ async function findVideoByTitle(page, title) {
 	const titleComponent = page.getByText(title);
 	// Go up a couple levels to find the encompassing component of the video
 	// You might need to change this if the structure of your video components differ
-	const videoParent = titleComponent.locator("xpath=./../..");
+	const videoParent = titleComponent.locator("xpath=./..");
 
 	return videoParent;
 }
 
 test.describe("Videos", () => {
 	test.beforeEach(async () => {
-		await resetDatabase();
+		console.log("!--- TEST STARTED ---!");
+		await db.connect();
 	});
 
 	test("Level 130 requirements - display videos", async ({ page }) => {
+		const videoResults = await db.query("SELECT * FROM videos LIMIT 1");
+
 		// Given I open the website
 		await openWebsite(page);
 
 		// Then I am able to see the video entries
-		await expect(page.getByText("Never Gonna Give You Up")).toBeVisible();
+		const vidTitle = await findVideoByTitle(page, videoResults.rows[0].title);
+		await expect(vidTitle).toBeVisible();
 	});
 
 	test("Level 200 requirements - videos in iframe", async ({ page }) => {
@@ -49,9 +64,14 @@ test.describe("Videos", () => {
 
 		// And I am able to see the embedded video
 		const videoIframe = videoParent.locator("iframe");
+
 		await expect(videoIframe).toHaveAttribute(
 			"src",
-			"https://www.youtube.com/embed/" + videoResults.rows[0].url.slice(-11)
+			"https://www.youtube.com/embed" +
+				videoResults.rows[0].src.slice(
+					videoResults.rows[0].src.lastIndexOf("/"),
+					videoResults.rows[0].src.length
+				)
 		);
 	});
 
@@ -62,36 +82,49 @@ test.describe("Videos", () => {
 		// Then I am able to see the upload section
 		await expect(page.getByText("Submit a new video")).toBeVisible();
 
+		await page.getByRole("checkbox").setChecked(true);
+
 		// And I am able to fill in the details
-		await page.getByLabel("Title").fill("The New Title");
 		await page
-			.getByLabel("Url")
-			.fill("https://www.youtube.com/watch?v=ABCDEFGHIJK");
+			.getByPlaceholder("Video title")
+			.fill("Designing & Building Websites is Easy");
+		await page
+			.getByPlaceholder("Video url")
+			.fill("https://www.youtube.com/watch?v=PgxT1wItu8M");
 
 		// When I submit the details
-		await page.getByRole("button", { name: "Submit" }).click();
+		await page.getByRole("button", { name: "SUBMIT" }).click();
 
 		// Then I am able to see the video's title to appear
-		const videoParent = await findVideoByTitle(page, "The New Title");
+		const videoParent = await findVideoByTitle(
+			page,
+			"Designing & Building Websites is Easy"
+		);
 
 		// And I am able to see the embedded video
 		const videoIframe = videoParent.locator("iframe");
 		await expect(videoIframe).toHaveAttribute(
 			"src",
-			"https://www.youtube.com/embed/ABCDEFGHIJK"
+			"https://www.youtube.com/embed/PgxT1wItu8M"
 		);
 
 		// And I can see the new video in the database
 		const dbResponse = await db.query(
-			"SELECT * FROM videos WHERE title = $1 AND url = $2",
-			["The New Title", "https://www.youtube.com/watch?v=ABCDEFGHIJK"]
+			"SELECT * FROM videos WHERE title = $1 AND src = $2",
+			[
+				"Designing & Building Websites is Easy",
+				"https://www.youtube.com/embed/PgxT1wItu8M",
+			]
 		);
+
 		expect(dbResponse.rows.length).toBe(1);
 	});
 
 	test("Level 220 requirements - delete video", async ({ page }) => {
 		// Given I have a video from the database
-		const videoResults = await db.query("SELECT * FROM videos LIMIT 1");
+		const videoResults = await db.query(
+			"SELECT * FROM videos where title = 'Designing & Building Websites is Easy'"
+		);
 
 		// And I open up the website
 		await openWebsite(page);
@@ -103,7 +136,7 @@ test.describe("Videos", () => {
 		);
 
 		// Then I am able to see a button that removes the video
-		const deleteButton = videoParent.getByText("Remove video");
+		const deleteButton = videoParent.getByText("DELETE");
 
 		// When I remove the video when pressing the button
 		deleteButton.click();
@@ -133,7 +166,7 @@ test.describe("Videos", () => {
 		);
 
 		// And I am able to see a button that adds a vote to the video
-		const upVoteButton = videoParent.getByText("Up Vote");
+		const upVoteButton = videoParent.locator("svg.upvote");
 
 		// And the current rating
 		await expect(
@@ -155,6 +188,37 @@ test.describe("Videos", () => {
 		);
 		expect(videoResultsAfterUpvote.rows[0].rating).toBe(
 			videoResults.rows[0].rating + 1
+		);
+	});
+
+	test("Level 350 requirements - downvote", async ({ page }) => {
+		const videoResults = await db.query("SELECT * FROM videos LIMIT 1");
+
+		await openWebsite(page);
+
+		const videoParent = await findVideoByTitle(
+			page,
+			videoResults.rows[0].title
+		);
+
+		const downVoteButton = videoParent.locator("svg.downvote");
+
+		await expect(
+			videoParent.getByText(new RegExp(`^${videoResults.rows[0].rating}$`))
+		).toBeVisible();
+
+		downVoteButton.click();
+
+		await expect(
+			videoParent.getByText(new RegExp(`^${videoResults.rows[0].rating - 1}$`))
+		).toBeVisible();
+
+		const videoResultsAfterDownvote = await db.query(
+			"SELECT * FROM videos WHERE id = $1",
+			[videoResults.rows[0].id]
+		);
+		expect(videoResultsAfterDownvote.rows[0].rating).toBe(
+			videoResults.rows[0].rating - 1
 		);
 	});
 });
