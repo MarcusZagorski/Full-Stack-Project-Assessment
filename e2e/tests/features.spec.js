@@ -12,7 +12,7 @@ const db = new Pool({ connectionString: process.env.TEST_DATABASE_URL });
 
 async function openWebsite(page) {
 	// Open URL
-	await page.goto("http://localhost:3000");
+	await page.goto("http://18.171.144.106:3000/");
 	// Wait for title to appear
 	await expect(
 		page.getByRole("heading", { name: "Video Recommendations", exact: true })
