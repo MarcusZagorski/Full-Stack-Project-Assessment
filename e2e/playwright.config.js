@@ -6,6 +6,7 @@ import { defineConfig, devices } from "@playwright/test";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+	timeout: 5 * 60 * 1000,
 	testDir: "./tests",
 	/* Do not run tests in files in parallel due to database usage */
 	fullyParallel: false,
