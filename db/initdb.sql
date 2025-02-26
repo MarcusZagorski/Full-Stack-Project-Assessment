@@ -7,5 +7,5 @@ CREATE TABLE videos (
     currentdate date
 );
 
-INSERT INTO videos (title, src, currenttime, currentdate) VALUES ('Make money with coding.. What youre NOT being told!', 'https://youtu.be/CX0V_hspEZU?si=PKEXv3tmSZo5FtKU', NOW(), CURRENT_DATE)
+INSERT INTO videos (title, src, currenttime, currentdate) VALUES ('X-MEN: The Animated Series RECAP: Everything You Need to Know Before X-Men "97!', 'https://www.youtube.com/embed/QiIYSipWf4s', NOW(), CURRENT_DATE)
 
